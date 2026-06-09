@@ -244,43 +244,68 @@ footer a:hover{opacity:1;}
 // submit
 document.getElementById('raffleForm').addEventListener('submit',function(e){
   e.preventDefault();
+
   var fn=document.getElementById('fname').value.trim();
   var ln=document.getElementById('lname').value.trim();
   var em=document.getElementById('email').value.trim();
   var ph=document.getElementById('phone').value.trim();
   var ck=document.getElementById('consent').checked;
+  var btn=document.querySelector('.submit-btn');
 
   if(!fn||!ln){alert('Please enter your first and last name.');return;}
   if(!em||!em.includes('@')){alert('Please enter a valid email address.');return;}
   if(!ph){alert('Please enter your phone number.');return;}
   if(!ck){alert('Please check the box to agree and enter the raffle.');return;}
 
-  // ── POST to Google Forms in the background ──
-  // Responses flow into the Google Sheet linked to this Google Form.
-  var GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSdsUTcsQXXnaOtNCen67Te-tAv1U2KQVqzQdud0c9l2HFc1JA/formResponse';
-  var formData = new FormData();
-  formData.append('entry.224571818', fn);        // First Name
-  formData.append('entry.1346874556', ln);       // Last Name
-  formData.append('entry.1367108613', em);       // Email Address
-  formData.append('entry.2042854745', ph);       // Phone Number
-  formData.append('entry.944832202', 'I Agree'); // Communication Consent
+  btn.disabled=true;
+  btn.textContent='Submitting...';
 
-  fetch(GOOGLE_FORM_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: formData
-  }).catch(function(err){
-    console.warn('Google Forms submit error:', err);
-  });
+  // Google Forms endpoint. This must be /formResponse, not /viewform.
+  var GOOGLE_FORM_URL='https://docs.google.com/forms/d/e/1FAIpQLSdsUTcsQXXnaOtNCen67Te-tAv1U2KQVqzQdud0c9l2HFc1JA/formResponse';
 
-  // Show success
-  document.getElementById('form-card').style.display='none';
-  var sc=document.getElementById('success-card');
-  sc.style.display='block';
-  document.getElementById('success-name').textContent=fn;
-  document.getElementById('success-email').textContent=em;
-  document.getElementById('success-phone').textContent=ph;
-  window.scrollTo({top:0,behavior:'smooth'});
+  // Submit through a hidden iframe so the visitor stays on this page
+  // and the response still lands in the linked Google Sheet.
+  var iframe=document.createElement('iframe');
+  iframe.name='hidden-google-form-frame';
+  iframe.style.display='none';
+  document.body.appendChild(iframe);
+
+  var googleForm=document.createElement('form');
+  googleForm.action=GOOGLE_FORM_URL;
+  googleForm.method='POST';
+  googleForm.target='hidden-google-form-frame';
+  googleForm.style.display='none';
+
+  function addField(name,value){
+    var input=document.createElement('input');
+    input.type='hidden';
+    input.name=name;
+    input.value=value;
+    googleForm.appendChild(input);
+  }
+
+  addField('entry.224571818',fn);        // First Name
+  addField('entry.1346874556',ln);       // Last Name
+  addField('entry.1367108613',em);       // Email Address
+  addField('entry.2042854745',ph);       // Phone Number
+  addField('entry.944832202','I Agree'); // Communication Consent
+
+  document.body.appendChild(googleForm);
+  googleForm.submit();
+
+  // Show success after submitting in the background.
+  setTimeout(function(){
+    document.getElementById('form-card').style.display='none';
+    var sc=document.getElementById('success-card');
+    sc.style.display='block';
+    document.getElementById('success-name').textContent=fn;
+    document.getElementById('success-email').textContent=em;
+    document.getElementById('success-phone').textContent=ph;
+    window.scrollTo({top:0,behavior:'smooth'});
+
+    googleForm.remove();
+    iframe.remove();
+  },700);
 });
 </script>
 </body>
