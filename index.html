@@ -26,6 +26,16 @@ body{font-family:'Inter',sans-serif;background:var(--navy);min-height:100vh;over
 @keyframes floatup{0%{transform:translateY(105vh) scale(0);opacity:0;}10%{opacity:.55;}90%{opacity:.25;}100%{transform:translateY(-10vh) scale(1);opacity:0;}}
 
 .wrap{position:relative;z-index:1;max-width:460px;margin:0 auto;padding:2rem 1.25rem 3.5rem;}
+  .logo{
+    width:70px;
+    height:auto;
+    display:block;
+    margin:0 auto 12px auto;
+
+    filter:
+      drop-shadow(0 0 8px rgba(201,168,76,.25))
+      drop-shadow(0 0 16px rgba(201,168,76,.12));
+}
 
 /* ── logo badge ── */
 .logo-badge{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.07);border:1px solid rgba(201,168,76,.3);border-radius:50px;padding:7px 18px 7px 10px;margin-bottom:1.25rem;}
@@ -124,7 +134,7 @@ footer a:hover{opacity:1;}
   <!-- Logo -->
   <div style="text-align:center;margin-bottom:1.5rem;">
     <div style="margin-bottom:1.25rem;">
-      <img src="logo.png"
+      <img src="logo.png?v=2" class="logo" alt="Cafe of Life Logo">
     </div>
     <div class="logo-badge" style="margin-bottom:.75rem;">
       <span>Cafe of Life Chiropractic &amp; Wellness</span>
