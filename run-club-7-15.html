@@ -60,7 +60,7 @@
         </div>
         <div class="field"><label for="dob">Date of birth <span class="req">*</span></label><input type="text" id="dob" name="entry.468805965" placeholder="MM/DD/YYYY" inputmode="numeric" autocomplete="bday" maxlength="10" pattern="(0[1-9]|1[0-2])/(0[1-9]|[12][0-9]|3[01])/[0-9]{4}" title="Enter date of birth as MM/DD/YYYY" required></div>
         <div class="field"><label for="email">Email address <span class="req">*</span></label><input type="email" id="email" name="entry.1894217329" placeholder="your@email.com" autocomplete="email" required></div>
-        <div class="field"><label for="phone">Phone number <span class="req">*</span></label><input type="tel" id="phone" name="entry.1536374493" placeholder="(xxx) xxx-xxxx" autocomplete="tel" inputmode="tel" required></div>
+        <div class="field"><label for="phone">Phone number <span class="req">*</span></label><input type="tel" id="phone" name="entry.1536374493" placeholder="(xxx) xxx-xxxx" autocomplete="tel" inputmode="numeric" maxlength="14" pattern="\(\d{3}\) \d{3}-\d{4}" title="Enter a 10-digit phone number" required></div>
         <div class="field"><label for="streetAddress">Street address <span class="req">*</span></label><input type="text" id="streetAddress" name="entry.110041664" placeholder="Street address" autocomplete="street-address" required></div>
         <div class="three-col">
           <div class="field"><label for="city">City <span class="req">*</span></label><input type="text" id="city" name="entry.173296320" placeholder="City" autocomplete="address-level2" required></div>
@@ -130,6 +130,10 @@ document.getElementById('dob').addEventListener('blur',function(){
   const valid=year>=1900&&entered<=today&&entered.getFullYear()===year&&entered.getMonth()===month-1&&entered.getDate()===day;
   this.setCustomValidity(valid?'':'Enter a real date of birth between 1900 and today.');
   if(!valid)this.reportValidity();
+});
+document.getElementById('phone').addEventListener('input',function(){
+  const digits=this.value.replace(/\D/g,'').slice(0,10);
+  this.value=digits.length>6?'('+digits.slice(0,3)+') '+digits.slice(3,6)+'-'+digits.slice(6):digits.length>3?'('+digits.slice(0,3)+') '+digits.slice(3):digits.length?'('+digits:'';
 });
 document.getElementById('raffleForm').addEventListener('submit',function(){
   const button=document.getElementById('submitButton');button.disabled=true;button.textContent='Submitting...';
